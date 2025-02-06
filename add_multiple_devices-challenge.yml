@@ -1,0 +1,31 @@
+---
+- name: Add multiple new devices to the API
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Add devices to the API
+      ansible.builtin.uri:
+        url: "http://localhost:5000/devices"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body: "{{ item }}"
+        body_format: json
+      loop:
+        - {"name": "CoreSwitch1", "ip": "192.168.100.1"}
+        - {"name": "AccessSwitch1", "ip": "192.168.100.2"}
+        - {"name": "Router3", "ip": "10.1.1.1"}
+        - {"name": "Firewall2", "ip": "172.16.1.1"}
+      register: result
+
+    - name: Confirm addition of each device
+      debug:
+        msg: "Added: {{ item.name }} with IP {{ item.ip }}"
+      loop:
+        - {"name": "CoreSwitch1", "ip": "192.168.100.1"}
+        - {"name": "AccessSwitch1", "ip": "192.168.100.2"}
+        - {"name": "Router3", "ip": "10.1.1.1"}
+        - {"name": "Firewall2", "ip": "172.16.1.1"}
+
+
